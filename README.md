@@ -8,8 +8,8 @@ Terraform Blocks is all about learning, you can use project exemples to your
 
 | Provider              | Support     | Description                                         | Projects |
 | --------------------- | ----------- | --------------------------------------------------- | -------- |
-| [AWS](./aws/)         | `Official`  | Amazon Web Service is a public cloud provider       | 2        |
-| [Proxmox](./proxmox/) | `Community` | Proxmox VE is a open source virtualization platform | 0        |
+| [AWS](./aws/)         | `Official`  | Amazon Web Service is a public cloud provider       | 1        |
+| [Proxmox](./proxmox/) | `Community` | Proxmox VE is a open source virtualization platform | 1        |
 
 ## Contributing
 

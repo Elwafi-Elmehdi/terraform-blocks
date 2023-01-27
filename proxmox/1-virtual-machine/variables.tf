@@ -43,3 +43,8 @@ variable "proxmox_vm_storage" {
   type        = string
   default     = "local-lvm"
 }
+variable "proxmox_iso_repository_storage_id" {
+  description = "ISO repository ID sotrage"
+  type        = string
+  default     = "local-lvm"
+}
