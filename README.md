@@ -1,5 +1,13 @@
-# AWS FAQs
+# Terraform Snippets
 
-### How to securly pass AWS credentials to Terraform ?
+Terraform Snippets is a learning project,
 
-###
+## Motivation
+
+## Projects
+
+| Provider | Projects |
+| -------- | -------- |
+| AWS      | 2        |
+
+## Contributers
