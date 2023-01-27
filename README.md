@@ -1,13 +1,22 @@
-# Terraform Snippets
+# Terraform Blocks
 
-Terraform Snippets is a learning project,
+Terraform Blocks is all about learning, you can use project exemples to your
 
 ## Motivation
 
-## Projects
+## Providers
 
-| Provider | Projects |
-| -------- | -------- |
-| AWS      | 2        |
+| Provider              | Support     | Description                                         | Projects |
+| --------------------- | ----------- | --------------------------------------------------- | -------- |
+| [AWS](./aws/)         | `Official`  | Amazon Web Service is a public cloud provider       | 2        |
+| [Proxmox](./proxmox/) | `Community` | Proxmox VE is a open source virtualization platform | 0        |
 
-## Contributers
+## Contributing
+
+The repository is open to anyone who wants to learn or improve the existings resources.
+
+you can contribute by:
+
+-   Writhing Documentation
+-   Proposing new ideas
+-   Adding new projects
