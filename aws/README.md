@@ -2,9 +2,10 @@
 
 ## Projects
 
-| Provider | Projects                             | Description                                                                | Resources                           |
-| -------- | ------------------------------------ | -------------------------------------------------------------------------- | ----------------------------------- |
-| AWS      | [Simple Web Server](./1-web-server/) | a public web server deployed in the default VPC, running on a EC2 instance | `aws_instance`,`aws_security_group` |
+| Provider | Projects                                         | Description                                                                                | Resources                                                                  |
+| -------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| AWS      | [Simple Web Server](./1-web-server/)             | a public web server deployed in the default VPC, running on a EC2 instance                 | `aws_instance`,`aws_security_group`                                        |
+| AWS      | [Web Server behind a NAT](./2-nated-web-server/) | Web server behind a nat with a fixed Public IP. more secured access through a bastian host | 2 x `aws_instance`, 2 x `aws_security_group`, `aws_eip`, `aws_nat_gateway` |
 
 ## FAQs
 
@@ -23,9 +24,15 @@ $ export AWS_SECRET_ACCESS_KEY="awssecretkey"
 
 #### Credentials File
 
-in your aws credentials file
+in your aws credentials file `$HOME/.aws/credentials`
 
-### I cant see Terraform provisioned resources on Web Console
+```ini
+[default]
+aws_access_key_id = awsaccesskey
+aws_secret_access_key = awssecretkey
+```
+
+### I cant see Terraform provisioned resources on Web Console.
 
 The default region is `us-east-1`, switch your web console to `us-east-1`.
 
