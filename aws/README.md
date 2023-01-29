@@ -8,6 +8,53 @@
 
 ## FAQs
 
-### How to securly pass AWS credentials to Terraform ?
+### How to securely pass AWS credentials to Terraform ?
 
-###
+You can pass AWS credentials, as Environment variables or store them in `$HOME/.aws/credentials` for Linux, and `"%USERPROFILE%\.aws\config` for MacOS and `%USERPROFILE%\.aws\credentials` on Windows.
+
+#### Environment Variables
+
+You can pass credentials using envs, note that the envs will only be define in the current shell session, if you exit your shell you would repeat the process below
+
+```shell
+$ export AWS_ACCESS_KEY_ID="awsaccesskey"
+$ export AWS_SECRET_ACCESS_KEY="awssecretkey"
+```
+
+#### Credentials File
+
+in your aws credentials file
+
+### I cant see Terraform provisioned resources on Web Console
+
+The default region is `us-east-1`, switch your web console to `us-east-1`.
+
+### How to change default AWS region?
+
+The default region is `us-east-1`, You can switch in terraform HCL configuration
+
+```hcl
+provider "aws" {
+    region = "eu-west-1"
+}
+```
+
+or with environment variables
+
+```shell
+$ export AWS_REGION="eu-west-3"
+```
+
+### Getting `an error occurred (Authfailure) when calling the describeinstances operation`
+
+This is caused either by an expired secret token or non synced time between your machine and aws servers.
+
+#### Sync Your machine time with AWS servers
+
+```shell
+$ date
+$ sudo service ntpd stop
+$ sudo ntpdate time.nist.gov
+$ sudo service ntpd start
+$ ntpstat
+```

@@ -1,6 +1,6 @@
 # Terraform Blocks
 
-Terraform Blocks is all about learning, you can use project exemples to your
+Terraform Blocks is all about learning, you can use project examples to your
 
 ## Motivation
 
@@ -13,10 +13,11 @@ Terraform Blocks is all about learning, you can use project exemples to your
 
 ## Contributing
 
-The repository is open to anyone who wants to learn or improve the existings resources.
+The repository is open to anyone who wants to learn or improve the existing resources.
 
 you can contribute by:
 
 -   Writhing Documentation
 -   Proposing new ideas
 -   Adding new projects
+-   Give feedback
