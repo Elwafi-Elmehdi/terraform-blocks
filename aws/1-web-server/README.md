@@ -12,7 +12,7 @@ This architecture is one of the simplest ones, it consists of a publicly availab
 
 ## Components
 
--   a Virutal machine : AWS EC2 `t2.micro` Instance configured as a web server.
+-   a virtual machine : AWS EC2 `t2.micro` Instance configured as a web server.
 -   a firewall rule : AWS security group allowing 80 traffic from internet.
 
 ## Pros and Cons

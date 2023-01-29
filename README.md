@@ -1,8 +1,10 @@
 # Terraform Blocks
 
-Terraform Blocks is all about learning, you can use project examples to your
+Terraform Blocks is all about learning Terraform and the ecosystem around, feel free to use project examples to your likings.
 
 ## Motivation
+
+The main motivation for Terraform Blocks is to learn and practice terraform through a variety of providers and scenarios
 
 ## Providers
 
@@ -20,4 +22,5 @@ you can contribute by:
 -   Writhing Documentation
 -   Proposing new ideas
 -   Adding new projects
--   Give feedback
+-   Giving feedback
+-   Fixing Bugs
