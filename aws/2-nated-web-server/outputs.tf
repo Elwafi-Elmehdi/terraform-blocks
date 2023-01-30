@@ -9,3 +9,6 @@ output "bastian_host_ip" {
 output "bastian_private_ip" {
   value = aws_instance.bastian_server.private_ip
 }
+output "webserver_private_ip" {
+  value = aws_instance.web_server.private_ip
+}

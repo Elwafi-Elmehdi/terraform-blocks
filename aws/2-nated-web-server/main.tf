@@ -55,6 +55,14 @@ resource "aws_security_group" "bastian_sg" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
+  egress {
+    description      = "Allow Internet Access"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 }
 resource "aws_security_group" "web_server_sg" {
   name        = "Bastin SSH public access"
@@ -73,6 +81,14 @@ resource "aws_security_group" "web_server_sg" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["${aws_instance.bastian_server.private_ip}/32"]
+  }
+  egress {
+    description      = "Allow Internet Access"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
   lifecycle {
     create_before_destroy = true
@@ -117,7 +133,7 @@ resource "aws_instance" "web_server" {
   instance_type   = var.instance_type
   key_name        = aws_key_pair.public_key.key_name
   subnet_id       = aws_subnet.private_subnet.id
-  security_groups = [aws_security_group.web_server_sg]
+  security_groups = [aws_security_group.web_server_sg.id]
   tags = {
     "Name" = "Private Web Server"
   }
@@ -128,7 +144,7 @@ resource "aws_instance" "web_server" {
     
     yum install -y httpd.x86_64
     
-    echo "<h1>EC2 : Hello from $HOST</h1>" >> /var/www/html/index.html
+    echo "<h1>EC2 : Hello from $(hostname -f)</h1>" >> /var/www/html/index.html
 
     systemctl start httpd.service
 
