@@ -118,4 +118,21 @@ resource "aws_instance" "web_server" {
   key_name        = aws_key_pair.public_key.key_name
   subnet_id       = aws_subnet.private_subnet.id
   security_groups = [aws_security_group.web_server_sg]
+  tags = {
+    "Name" = "Private Web Server"
+  }
+  user_data = <<EOF
+    #!/bin/bash
+
+    yum update -y 
+    
+    yum install -y httpd.x86_64
+    
+    echo "<h1>EC2 : Hello from $HOST</h1>" >> /var/www/html/index.html
+
+    systemctl start httpd.service
+
+	systemctl enable httpd.service
+
+  EOF
 }
