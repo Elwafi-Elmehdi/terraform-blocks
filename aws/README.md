@@ -2,10 +2,10 @@
 
 ## Projects
 
-| Provider | Projects                                         | Description                                                                                | Resources                                                                  |
-| -------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
-| AWS      | [Simple Web Server](./1-web-server/)             | a public web server deployed in the default VPC, running on a EC2 instance                 | `aws_instance`,`aws_security_group`                                        |
-| AWS      | [Web Server behind a NAT](./2-nated-web-server/) | Web server behind a nat with a fixed Public IP. more secured access through a bastian host | 2 x `aws_instance`, 2 x `aws_security_group`, `aws_eip`, `aws_nat_gateway` |
+| Provider | Projects                                                             | Description                                                                                     | Resources                                                                  |
+| -------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| AWS      | [Simple Web Server](./1-web-server/)                                 | a public web server deployed in the default VPC, running on a EC2 instance                      | `aws_instance`,`aws_security_group`                                        |
+| AWS      | [Private server behind a NAT, with a jumpbox](./2-nated-web-server/) | private server behind a nat, more secured access through a bastian host with a fixed Public IP. | 2 x `aws_instance`, 2 x `aws_security_group`, `aws_eip`, `aws_nat_gateway` |
 
 ## FAQs
 

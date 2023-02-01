@@ -10,12 +10,12 @@ The main motivation for Terraform Blocks is to learn and practice terraform thro
 
 | Provider              | Support     | Description                                         | Projects |
 | --------------------- | ----------- | --------------------------------------------------- | -------- |
-| [AWS](./aws/)         | `Official`  | Amazon Web Service is a public cloud provider       | 1        |
+| [AWS](./aws/)         | `Official`  | Amazon Web Service is a public cloud provider       | 2        |
 | [Proxmox](./proxmox/) | `Community` | Proxmox VE is a open source virtualization platform | 1        |
 
 ## Contributing
 
-The repository is open to anyone who wants to learn or improve the existing resources.
+The repository is open to anyone who wants to learn, add new resources or improve the existing ones.
 
 you can contribute by:
 
