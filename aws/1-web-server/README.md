@@ -17,6 +17,6 @@ This architecture is one of the simplest ones, it consists of a publicly availab
 
 ## Pros and Cons
 
--   **+** Simple to deploy
--   **+** Easy and centralized management.
--   **-** Public IP Changes:
+-   Simple to deploy
+-   Easy and centralized management.
+-   Public IP Changes
