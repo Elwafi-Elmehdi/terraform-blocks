@@ -6,8 +6,8 @@ Proxmox VE is a virtualization platform, built on top KVM and Qemu technologies
 
 The default provider is `Telman/Proxmox`
 
--   [Source Code]()
--   [Terraform Registry]()
+-   [Source Code](https://github.com/Telmate/terraform-provider-proxmox)
+-   [Terraform Registry](https://registry.terraform.io/providers/Telmate/proxmox/latest)
 
 ## Projects
 

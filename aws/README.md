@@ -1,11 +1,21 @@
 # AWS
 
+AWS or Amazon Web Services is a major cloud provider
+
+## Provider
+
+The default provider is `hashicorp/aws`
+
+-   [Source Code](https://github.com/hashicorp/terraform-provider-aws)
+-   [Terraform Registry](https://registry.terraform.io/providers/hashicorp/aws/latest)
+
 ## Projects
 
 | Provider | Projects                                                             | Description                                                                                     | Resources                                                                  |
 | -------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | AWS      | [Simple Web Server](./1-web-server/)                                 | a public web server deployed in the default VPC, running on a EC2 instance                      | `aws_instance`,`aws_security_group`                                        |
 | AWS      | [Private server behind a NAT, with a jumpbox](./2-nated-web-server/) | private server behind a nat, more secured access through a bastian host with a fixed Public IP. | 2 x `aws_instance`, 2 x `aws_security_group`, `aws_eip`, `aws_nat_gateway` |
+| AWS      | [scalable and highly available vpc](./3-scalable-vpc/)               | deploy a vpc with 2 private subnets and 2 public subnets in which an ec2 instance is deployed   |                                                                            |
 
 ## FAQs
 
