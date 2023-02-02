@@ -3,3 +3,9 @@
 <div align="center">
     <img src="../../images/aws/3-ha-vpc-design.png">
 </div>
+
+## Architecture
+
+## Components
+
+## Pros and Cons
