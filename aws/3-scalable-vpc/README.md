@@ -26,4 +26,3 @@ a Common VPC architecture that provide HA thanks to global AWS infrastructure co
 -   Scalable and can easy evolve to response to demands
 -   Designed with fault tolerance in mind
 -   No internet Access to resources in private subnets
--
