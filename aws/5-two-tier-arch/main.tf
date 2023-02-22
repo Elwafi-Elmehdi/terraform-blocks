@@ -66,7 +66,7 @@ resource "aws_instance" "server" {
   key_name               = aws_key_pair.terraform_key_pair.key_name
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = aws_subnet.private_subnet[0].id
+  subnet_id              = aws_subnet.public_subnet[0].id
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
   tags = {
     "Name" = "Server"
@@ -107,7 +107,7 @@ resource "aws_security_group" "allow_mysql" {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
-    cidr_blocks = [aws_instance.server.private_ip]
+    cidr_blocks = ["${aws_instance.server.private_ip}/32"]
   }
   egress {
     description      = "Allow Egress Internet Access"
@@ -125,7 +125,7 @@ resource "aws_security_group" "allow_mysql" {
 
 resource "aws_db_subnet_group" "rds_subnet_association" {
   name       = "main"
-  subnet_ids = [aws_subnet.private_subnet[0].id]
+  subnet_ids = [aws_subnet.private_subnet[0].id, aws_subnet.private_subnet[1].id]
 }
 
 resource "aws_db_instance" "rds_instance" {
