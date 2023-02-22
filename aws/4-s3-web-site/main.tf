@@ -1,12 +1,13 @@
 resource "aws_s3_bucket" "website_bucket" {
   bucket = var.bucket_name
-
 }
+
 resource "aws_s3_object" "website_index_file" {
   bucket = aws_s3_bucket.website_bucket.id
   key    = "index.html"
   acl    = "public-read"
   source = var.index_file_path
+  content_type = "text/html"
 }
 
 resource "aws_s3_bucket_acl" "website_bucket_acl" {
@@ -19,12 +20,11 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
   policy = templatefile("./data/s3-policy.json", { bucket = var.bucket_name })
 }
 
-resource "aws_s3_bucket_website_configuration" "name" {
+resource "aws_s3_bucket_website_configuration" "website_config" {
   bucket = aws_s3_bucket.website_bucket.bucket
   index_document {
     suffix = "index.html"
   }
-
   error_document {
     key = "error.html"
   }
