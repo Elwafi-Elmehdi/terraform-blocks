@@ -3,7 +3,7 @@ provider "aws" {
   default_tags {
     tags = {
       Terraform = "True"
-      Project   = "Two Tier architecture project"
+      Project   = "EFS with Multiple EC2 Instances"
     }
   }
 }
