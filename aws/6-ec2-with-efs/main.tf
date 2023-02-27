@@ -46,8 +46,8 @@ resource "aws_route_table_association" "public_route_table_association" {
 ## Security Groups
 ###################
 resource "aws_security_group" "allow_nfs" {
-  name        = "SSH Public Access"
-  description = "Allow SSH Traffic from anywhere"
+  name        = "NFS Public Access"
+  description = "Allow NFS Traffic from anywhere"
   vpc_id      = aws_vpc.vpc.id
   ingress {
     description = "Allow NFS Traffic from the internet"
