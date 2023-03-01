@@ -45,16 +45,16 @@ resource "aws_route_table_association" "public_route_table_association" {
 ###################
 ## Security Groups
 ###################
-resource "aws_security_group" "allow_nfs" {
-  name        = "NFS Public Access"
-  description = "Allow NFS Traffic from anywhere"
+resource "aws_security_group" "allow_alb_http" {
+  name        = "HTTP Public Access to ALB"
+  description = "Allow HTTP Traffic from anywhere"
   vpc_id      = aws_vpc.vpc.id
   ingress {
-    description = "Allow NFS Traffic from the internet"
-    from_port   = 2049
-    to_port     = 2049
+    description = "Allow HTPP Traffic from the internet"
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [var.public_subnets_cidr[0], var.public_subnets_cidr[1]]
+    cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
     description      = "Allow Egress Internet Access"
@@ -65,3 +65,68 @@ resource "aws_security_group" "allow_nfs" {
     ipv6_cidr_blocks = ["::/0"]
   }
 }
+resource "aws_security_group" "allow_instance_http_ssh" {
+  name        = "HTTP Access for Instances "
+  description = "Allow HTTP Traffic from anywhere"
+  vpc_id      = aws_vpc.vpc.id
+  ingress {
+    description = "Allow HTTP Traffic"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "Allow SSH Traffic"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    description      = "Allow Egress Internet Access"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+}
+
+###################
+## EC2 Reosurces
+###################
+
+data "aws_ami" "amazon_linux_2" {
+  most_recent = true
+  filter {
+    name   = "owner-alias"
+    values = ["amazon"]
+  }
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm*"]
+  }
+}
+
+resource "aws_key_pair" "terraform_key_pair" {
+  public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMjjp0MyNr7d558xPzCmkqpvRMtBpKIvfU3Gf3ZS6xgg EC2"
+  key_name   = "Terraform_Key_Pair"
+}
+
+resource "aws_instance" "web_servers" {
+  count                  = length(var.public_subnets_cidr)
+  key_name               = aws_key_pair.terraform_key_pair.key_name
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = var.instance_type
+  subnet_id              = aws_subnet.public_subnet[count.index].id
+  vpc_security_group_ids = [aws_security_group.allow_instance_http_ssh.id]
+  user_data              = file("./data/boostrap.sh")
+  tags = {
+    "Name" = "Server ${count.index}"
+  }
+}
+
+###################
+## ALB resources
+###################
