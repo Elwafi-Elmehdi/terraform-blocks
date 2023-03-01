@@ -15,10 +15,11 @@ The default provider is `hashicorp/aws`
 | -------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | AWS      | [Simple Web Server](./1-web-server/)                                 | a public web server deployed in the default VPC, running on a EC2 instance                      |
 | AWS      | [Private server behind a NAT, with a jumpbox](./2-nated-web-server/) | private server behind a nat, more secured access through a bastian host with a fixed Public IP. |
-| AWS      | [scalable and highly available vpc](./3-scalable-vpc/)               | deploy a vpc with 2 private subnets and 2 public subnets in which an ec2 instance is deployed   |
+| AWS      | [Scalable and Highly available VPC](./3-scalable-vpc/)               | deploy a vpc with 2 private subnets and 2 public subnets in which an ec2 instance is deployed   |
 | AWS      | [S3 Static Website](./4-s3-web-site/)                                | deploy static content website in S3                                                             |
 | AWS      | [Two-tier Architecture](./5-two-tier-arch/)                          | a public application server with a private database                                             |
 | AWS      | [EFS with EC2 Instances](./6-ec2-with-efs/)                          | Deploy EFS and EC2 instances with automatic mount                                               |
+| AWS      | [Application Load Balancer]()                                        | Deploy an ALB with a target of EC2 instances serving static HTML                                |
 
 ## FAQs
 
