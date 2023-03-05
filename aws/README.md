@@ -19,7 +19,7 @@ The default provider is `hashicorp/aws`
 | AWS      | [S3 Static Website](./4-s3-web-site/)                                | deploy static content website in S3                                                             |
 | AWS      | [Two-tier Architecture](./5-two-tier-arch/)                          | a public application server with a private database                                             |
 | AWS      | [EFS with EC2 Instances](./6-ec2-with-efs/)                          | Deploy EFS and EC2 instances with automatic mount                                               |
-| AWS      | [Application Load Balancer]()                                        | Deploy an ALB with a target of EC2 instances serving static HTML                                |
+| AWS      | [Application Load Balancer](./7-application-load-balancer/)          | Deploy an ALB with a target of EC2 instances serving static HTML                                |
 
 ## FAQs
 
