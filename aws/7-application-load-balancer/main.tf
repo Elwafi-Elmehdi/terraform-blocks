@@ -130,3 +130,34 @@ resource "aws_instance" "web_servers" {
 ###################
 ## ALB resources
 ###################
+
+resource "aws_lb" "alb" {
+
+  name               = "demo-terraform-alb"
+  subnets            = [for subnet in aws_subnet.public_subnet : subnet.id]
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.allow_alb_http.id]
+}
+
+resource "aws_lb_target_group" "alb_target_group" {
+  name     = "demo-terraform-tg"
+  vpc_id   = aws_vpc.vpc.id
+  port     = "80"
+  protocol = "HTTP"
+}
+resource "aws_lb_target_group_attachment" "lb_target_group_attachments" {
+  count            = length(var.public_subnets_cidr)
+  target_group_arn = aws_lb_target_group.alb_target_group.arn
+  target_id        = aws_instance.web_servers[count.index].id
+  port             = 80
+}
+
+resource "aws_lb_listener" "alb_listener" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+  default_action {
+    target_group_arn = aws_lb_target_group.alb_target_group.arn
+    type             = "forward"
+  }
+}
