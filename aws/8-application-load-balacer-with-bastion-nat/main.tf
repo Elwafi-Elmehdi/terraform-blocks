@@ -36,15 +36,39 @@ resource "aws_route_table" "public_route_table" {
   }
 }
 
+resource "aws_route_table" "private_route_table" {
+  count  = length(var.private_subnets_cidr)
+  vpc_id = aws_vpc.vpc.id
+  route {
+    nat_gateway_id = aws_nat_gateway.nat_gateways[count.index].id
+    cidr_block     = "0.0.0.0/0"
+  }
+}
+
+resource "aws_route_table_association" "private_route_table_association" {
+  count          = length(var.private_subnets_cidr)
+  subnet_id      = aws_subnet.private_subnet[count.index].id
+  route_table_id = aws_route_table.private_route_table[count.index].id
+}
+
 resource "aws_route_table_association" "public_route_table_association" {
   count          = length(var.public_subnets_cidr)
   subnet_id      = aws_subnet.public_subnet[count.index].id
   route_table_id = aws_route_table.public_route_table[count.index].id
 }
 
+resource "aws_nat_gateway" "nat_gateways" {
+  count     = length(var.public_subnets_cidr)
+  subnet_id = aws_subnet.public_subnet[count.index].id
+  depends_on = [
+    aws_internet_gateway.igw
+  ]
+}
+
 ###################
 ## Security Groups
 ###################
+
 resource "aws_security_group" "allow_alb_http" {
   name        = "HTTP Public Access to ALB"
   description = "Allow HTTP Traffic from anywhere"
@@ -65,23 +89,45 @@ resource "aws_security_group" "allow_alb_http" {
     ipv6_cidr_blocks = ["::/0"]
   }
 }
-resource "aws_security_group" "allow_instance_http_ssh" {
-  name        = "HTTP Access for Instances "
-  description = "Allow HTTP Traffic from anywhere"
+
+resource "aws_security_group" "allow_bastian_ssh" {
+  name        = "SSH Public Access to Bastian Host"
+  description = "Allow SSH Traffic from anywhere"
   vpc_id      = aws_vpc.vpc.id
   ingress {
-    description = "Allow HTTP Traffic"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    description = "Allow SSH Traffic"
+    description = "Allow SSH Traffic from the internet"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    description      = "Allow Egress Internet Access"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+}
+
+resource "aws_security_group" "allow_instance_http_ssh" {
+  name        = "HTTP Access for ALB and SSH from public subnet"
+  description = "HTTP Access for ALB and SSH from public subnet"
+  vpc_id      = aws_vpc.vpc.id
+  ingress {
+    description     = "Allow HTTP Traffic"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.allow_alb_http.id]
+  }
+  ingress {
+    description     = "Allow SSH Traffic"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
+    security_groups = [aws_security_group.allow_bastian_ssh.id]
   }
   egress {
     description      = "Allow Egress Internet Access"
@@ -115,11 +161,11 @@ resource "aws_key_pair" "terraform_key_pair" {
 }
 
 resource "aws_instance" "web_servers" {
-  count                  = length(var.public_subnets_cidr)
+  count                  = length(var.private_subnets_cidr)
   key_name               = aws_key_pair.terraform_key_pair.key_name
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
-  subnet_id              = aws_subnet.public_subnet[count.index].id
+  subnet_id              = aws_subnet.private_subnet[count.index].id
   vpc_security_group_ids = [aws_security_group.allow_instance_http_ssh.id]
   user_data              = file("./data/boostrap.sh")
   tags = {
@@ -127,6 +173,16 @@ resource "aws_instance" "web_servers" {
   }
 }
 
+resource "aws_instance" "bastian_host" {
+  key_name               = aws_key_pair.terraform_key_pair.key_name
+  ami                    = data.aws_ami.amazon_linux_2.id
+  instance_type          = var.instance_type
+  subnet_id              = aws_subnet.public_subnet[0].id
+  vpc_security_group_ids = [aws_security_group.allow_instance_http_ssh.id]
+  tags = {
+    "Name" = "Bastian Host"
+  }
+}
 ###################
 ## ALB resources
 ###################
@@ -134,7 +190,7 @@ resource "aws_instance" "web_servers" {
 resource "aws_lb" "alb" {
 
   name               = "demo-terraform-alb"
-  subnets            = [for subnet in aws_subnet.public_subnet : subnet.id]
+  subnets            = [for subnet in aws_subnet.private_subnet : subnet.id]
   load_balancer_type = "application"
   security_groups    = [aws_security_group.allow_alb_http.id]
 }
