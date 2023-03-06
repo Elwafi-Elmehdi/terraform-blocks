@@ -58,13 +58,20 @@ resource "aws_route_table_association" "public_route_table_association" {
 }
 
 resource "aws_nat_gateway" "nat_gateways" {
-  count     = length(var.public_subnets_cidr)
-  subnet_id = aws_subnet.public_subnet[count.index].id
+  count         = length(var.public_subnets_cidr)
+  allocation_id = aws_eip.elastic_ips_ngw[count.index].id
+  subnet_id     = aws_subnet.public_subnet[count.index].id
   depends_on = [
     aws_internet_gateway.igw
   ]
 }
 
+resource "aws_eip" "elastic_ips_ngw" {
+  count = length(var.private_subnets_cidr)
+  depends_on = [
+    aws_internet_gateway.igw
+  ]
+}
 ###################
 ## Security Groups
 ###################
@@ -171,6 +178,9 @@ resource "aws_instance" "web_servers" {
   tags = {
     "Name" = "Server ${count.index}"
   }
+  depends_on = [
+    aws_nat_gateway.nat_gateways
+  ]
 }
 
 resource "aws_instance" "bastian_host" {
@@ -178,7 +188,7 @@ resource "aws_instance" "bastian_host" {
   ami                    = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.public_subnet[0].id
-  vpc_security_group_ids = [aws_security_group.allow_instance_http_ssh.id]
+  vpc_security_group_ids = [aws_security_group.allow_bastian_ssh.id]
   tags = {
     "Name" = "Bastian Host"
   }
@@ -188,7 +198,6 @@ resource "aws_instance" "bastian_host" {
 ###################
 
 resource "aws_lb" "alb" {
-
   name               = "demo-terraform-alb"
   subnets            = [for subnet in aws_subnet.private_subnet : subnet.id]
   load_balancer_type = "application"
