@@ -198,7 +198,6 @@ resource "aws_instance" "bastian_host" {
 ###################
 
 resource "aws_lb" "alb" {
-  internal           = false
   name               = "demo-terraform-alb"
   subnets            = [for subnet in aws_subnet.private_subnet : subnet.id]
   load_balancer_type = "application"
@@ -206,11 +205,11 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_target_group" "alb_target_group" {
-  name        = "demo-terraform-tg"
-  vpc_id      = aws_vpc.vpc.id
-  port        = "80"
+  name   = "demo-terraform-tg"
+  vpc_id = aws_vpc.vpc.id
+  port   = 80
   # target_type = "ip"
-  protocol    = "HTTP"
+  protocol = "HTTP"
 }
 resource "aws_lb_target_group_attachment" "lb_target_group_attachments" {
   count            = length(var.public_subnets_cidr)
@@ -221,10 +220,10 @@ resource "aws_lb_target_group_attachment" "lb_target_group_attachments" {
 
 resource "aws_lb_listener" "alb_listener" {
   load_balancer_arn = aws_lb.alb.id
-  port              = "80"
+  port              = 80
   protocol          = "HTTP"
   default_action {
-    target_group_arn = aws_lb_target_group.alb_target_group.id
+    target_group_arn = aws_lb_target_group.alb_target_group.arn
     type             = "forward"
   }
 }
