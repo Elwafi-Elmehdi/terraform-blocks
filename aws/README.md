@@ -21,6 +21,7 @@ The default provider is `hashicorp/aws`
 | AWS      | [EFS with EC2 Instances](./6-ec2-with-efs/)                                             | Deploy EFS and EC2 instances with automatic mount                                               |
 | AWS      | [Application Load Balancer](./7-application-load-balancer/)                             | Deploy an ALB with a target of EC2 instances serving static HTML                                |
 | AWS      | [ALB with Bastion Host and Nat Gateway](./8-application-load-balacer-with-bastion-nat/) | Deploy ALB with a target of Private EC2 instances, a bastian host and a NAT Gateway             |
+| AWS      | [ALB with Auto Scaling group](./9-application-load-balancer-with-autoscaling-group/)    | Deploy ALB with a autoscaling group, a bastian host and Nat gateways                            |
 
 ## FAQs
 
