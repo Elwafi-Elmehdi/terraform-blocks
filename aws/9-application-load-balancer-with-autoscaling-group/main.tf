@@ -167,21 +167,21 @@ resource "aws_key_pair" "terraform_key_pair" {
   key_name   = "Terraform_Key_Pair"
 }
 
-resource "aws_instance" "web_servers" {
-  count                  = length(var.private_subnets_cidr)
-  key_name               = aws_key_pair.terraform_key_pair.key_name
-  ami                    = data.aws_ami.amazon_linux_2.id
-  instance_type          = var.instance_type
-  subnet_id              = aws_subnet.private_subnet[count.index].id
-  vpc_security_group_ids = [aws_security_group.allow_instance_http_ssh.id]
-  user_data              = file("./data/boostrap.sh")
-  tags = {
-    "Name" = "Server ${count.index}"
-  }
-  depends_on = [
-    aws_nat_gateway.nat_gateways
-  ]
-}
+# resource "aws_instance" "web_servers" {
+#   count                  = length(var.private_subnets_cidr)
+#   key_name               = aws_key_pair.terraform_key_pair.key_name
+#   ami                    = data.aws_ami.amazon_linux_2.id
+#   instance_type          = var.instance_type
+#   subnet_id              = aws_subnet.private_subnet[count.index].id
+#   vpc_security_group_ids = [aws_security_group.allow_instance_http_ssh.id]
+#   user_data              = file("./data/boostrap.sh")
+#   tags = {
+#     "Name" = "Server ${count.index}"
+#   }
+#   depends_on = [
+#     aws_nat_gateway.nat_gateways
+#   ]
+# }
 
 resource "aws_instance" "bastian_host" {
   key_name               = aws_key_pair.terraform_key_pair.key_name
@@ -198,25 +198,19 @@ resource "aws_instance" "bastian_host" {
 ###################
 
 resource "aws_lb" "alb" {
+  internal           = false
   name               = "demo-terraform-alb"
   subnets            = [for subnet in aws_subnet.private_subnet : subnet.id]
   load_balancer_type = "application"
   security_groups    = [aws_security_group.allow_alb_http.id]
 }
 
-# resource "aws_lb_target_group" "alb_target_group" {
-#   name   = "demo-terraform-tg"
-#   vpc_id = aws_vpc.vpc.id
-#   port   = 80
-#   # target_type = "ip"
-#   protocol = "HTTP"
-# }
-# resource "aws_lb_target_group_attachment" "lb_target_group_attachments" {
-#   count            = length(var.public_subnets_cidr)
-#   target_group_arn = aws_lb_target_group.alb_target_group.arn
-#   target_id        = aws_instance.web_servers[count.index].id
-#   port             = 80
-# }
+resource "aws_lb_target_group" "alb_target_group" {
+  name     = "demo-terraform-tg"
+  vpc_id   = aws_vpc.vpc.id
+  port     = 80
+  protocol = "HTTP"
+}
 
 resource "aws_lb_listener" "alb_listener" {
   load_balancer_arn = aws_lb.alb.id
@@ -226,4 +220,51 @@ resource "aws_lb_listener" "alb_listener" {
     target_group_arn = aws_lb_target_group.alb_target_group.arn
     type             = "forward"
   }
+}
+
+###################
+## ASG resources
+###################
+
+
+
+# resource "aws_launch_template" "asg_launch_template" {
+#   name_prefix          = "demo-terraform-launch-asg-"
+#   instance_type        = var.instance_type
+#   image_id             = data.aws_ami.amazon_linux_2.id
+#   key_name             = aws_key_pair.terraform_key_pair.key_name
+#   user_data            = filebase64("./data/boostrap.sh")
+#   security_group_names = [aws_security_group.allow_instance_http_ssh.id]
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }
+
+resource "aws_launch_configuration" "asg_launch_configuration" {
+  name_prefix     = "demo-terraform-launch-asg-"
+  instance_type   = var.instance_type
+  image_id        = data.aws_ami.amazon_linux_2.id
+  key_name        = aws_key_pair.terraform_key_pair.key_name
+  user_data       = filebase64("./data/boostrap.sh")
+  security_groups = [aws_security_group.allow_instance_http_ssh.id]
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_group" "asg" {
+  name                 = "demo-terraform-asg"
+  min_size             = 2
+  max_size             = 5
+  desired_capacity     = 2
+  vpc_zone_identifier = [for subnet in aws_subnet.private_subnet : subnet.id]
+  launch_configuration = aws_launch_configuration.asg_launch_configuration.id
+  depends_on = [
+    aws_nat_gateway.nat_gateways
+  ]
+}
+
+resource "aws_autoscaling_attachment" "asg_attachement" {
+  lb_target_group_arn    = aws_lb_target_group.alb_target_group.arn
+  autoscaling_group_name = aws_autoscaling_group.asg.name
 }
