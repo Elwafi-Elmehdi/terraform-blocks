@@ -1,3 +1,3 @@
 <div align="center">
-    <img src="../../images/aws/8-application-load-balancer-with-nat-bastian.png">
+    <img src="../../images/aws/9-ALB-with-ASG.png">
 </div>
