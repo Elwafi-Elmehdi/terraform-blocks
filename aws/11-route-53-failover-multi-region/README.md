@@ -1,3 +1,3 @@
 <div align="center">
-    <img src="../../images/aws/10-route-53-simple-routing.png">
+    <img src="../../images/aws/11-route-53-failover-multi-region.png">
 </div>
