@@ -9,7 +9,7 @@ provider "aws" {
 
 provider "aws" {
   region = "eu-west-1"
-  alias = "failover"
+  alias  = "failover"
   default_tags {
     tags = {
       "Terraform" = "True",

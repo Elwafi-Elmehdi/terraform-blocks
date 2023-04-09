@@ -5,3 +5,7 @@ output "dns_record" {
 output "server_ip" {
   value = aws_instance.webserver.public_ip
 }
+
+output "failover_server_ip" {
+  value = aws_instance.webserver_secondary.public_ip
+}
